@@ -13,7 +13,8 @@ if($id){
     
     $run_query = $dbh->execute();
     
-    header("Location: http://localhost:9090/mySQL_Trigger_Example/");
+    // Look into the Header () for redirect problem with Inventory App
+    header("Location: http://localhost:9090/mySQL_Trigger_Example/"); 
 
   exit;
 }
