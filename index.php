@@ -95,7 +95,8 @@
    </p>
   </form>
   <p>Upon clicking "Submit" button, form data is saved into subscriber table and a trigger 
-      before_subscriber_insert will execute. <br>
+      before_subscriber_insert will execute. <br><br>
+      
       
       The 'before_subscriber_insert trigger will update the 'audit_subscriber' table with time-stamp and the action that was just performed. </p>
 </div>

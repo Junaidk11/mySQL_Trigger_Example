@@ -1,25 +1,19 @@
 <?php
-require('dbconn.php');
+require('pdocon.php');
 
+// Create database connection handler.
+
+$dbh = new Pdocon; 
 $error   = '';
 
 $success = '';
 
-$result_array = array();
 
-$sql    = " select id, fname, email from subscribers ";
+// Create Query
+$dbh->query("SELECT * FROM subscribers");
 
-$result = $conn->query($sql);
-
-/*if there are results from database push to result array */
-
-if ($result->num_rows > 0) {
-
-    while($row = $result->fetch_assoc()) {
-
-        array_push($result_array, $row);
-    }
-}
+// Execute and return all rows of the database
+$results = $dbh->fetchMultiple();
 
 ?>
 
@@ -29,7 +23,7 @@ if ($result->num_rows > 0) {
 
 <head>
 
-  <title>Mysql trigger Example with PHP</title>
+  <title>Mysql Delete trigger Example with PHP</title>
 
   <style>
     .container {
@@ -97,20 +91,20 @@ if ($result->num_rows > 0) {
 
     </tr>
   
-    <?php for($i=0; $i<count($result_array); $i++){ ?>
+      <?php foreach ($results as $result) { ?>
   
     <tr>
 
-      <td><?php echo $i+1 ?></td>
+      <td><?php echo  $result['id'];?></td>
 
-      <td><?php echo $result_array[$i]['fname'] ?></td>
+      <td><?php echo $result['fname']; ?></td>
 
-      <td><?php echo $result_array[$i]['email'] ?></td>
+      <td><?php echo $result['email']; ?></td>
 
-      <td><a href="subscriber_edit.php?id=<?php echo $result_array[$i]['id'] ?>" >Edit</a>
+      <td><a href="subscriber_edit.php?id=<?php echo $result['id']; ?>" >Edit</a>
 
        | <a onclick="return confirm('Are you sure you want to delete this subscriber?');" 
-      href="subscriber_del.php?id=<?php echo $result_array[$i]['id'] ?>">Delete</a>
+      href="subscriber_del.php?id=<?php echo $result['id'] ?>">Delete</a>
 
       </td>
 

@@ -1,5 +1,9 @@
 <?php
-require('dbconn.php');
+require('pdocon.php');
+
+// Create Database Connection handler
+
+$dbh = new Pdocon;
 
 $error   = '';
 $success = '';
@@ -12,7 +16,7 @@ $error   = '';
 
 $success = '';
 
-$id      = intval($_GET['id']);
+$id      = $_GET['id'];
 
 if(isset($_POST['sub'])){
 
@@ -33,13 +37,20 @@ if(isset($_POST['sub'])){
     if(!$error){
       //update data in database
       
-      $sql    = "update subscribers set fname = ?, email = ? where id = ? ";
-
-      $stmt   = $conn->prepare($sql);
-
-      $stmt->bind_param('sss', $fname, $email, $id);
-
-      if($stmt->execute()){
+        // Create Query 
+        $dbh->query("UPDATE subscribers set fname=:name, email=:email WHERE id=:id"); 
+        
+        // Bind values
+        
+        $dbh->bindvalue(':id',$id,PDO::PARAM_INT);
+        $dbh->bindvalue(':name',$fname, PDO::PARAM_STR);
+        $dbh->bindvalue(':email',$email, PDO::PARAM_STR);
+        
+        // Execute the QUERY on the database.
+        $run_query = $dbh->execute();
+     
+      if($run_query){
+          // If UPDATE Query was Successful
         
         $success = 'Subscriber added successfully.';
 
@@ -49,6 +60,7 @@ if(isset($_POST['sub'])){
 
       }else{
 
+          // if update query was unsuccessful
         $error .= 'Error while saving subscriber. Try again. <br />';
 
       }
@@ -56,15 +68,19 @@ if(isset($_POST['sub'])){
 }
 
 //Fetch existing record to edit
-$sql    = " select id, fname, email from subscribers where id = $id";
 
-$result = $conn->query($sql);
+$dbh->query("SELECT * FROM subscribers WHERE id=:id");
 
-$record = $result->fetch_assoc();
+// Bind 
+$dbh->bindvalue(':id', $id, PDO::PARAM_INT);
 
-$fname  = $record['fname'];
+// Run Query and store returned data
 
-$email  = $record['email'];
+$run_query = $dbh->fetchSingle();
+
+$fname  = $run_query['fname'];
+
+$email  = $run_query['email'];
 
 ?>
 <!DOCTYPE html>
@@ -73,7 +89,7 @@ $email  = $record['email'];
 
 <head>
 
-  <title>Mysql trigger example with PHP</title>
+  <title>MySQL trigger with PHP</title>
 
   <style>
     .container {

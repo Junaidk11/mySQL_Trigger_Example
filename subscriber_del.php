@@ -1,18 +1,19 @@
 <?php
-require('dbconn.php');
+require('pdocon.php');
 
-$id  = intval($_GET['id']);
+$id  = $_GET['id'];
+
+$dbh= new Pdocon;
+
 
 if($id){
-  $sql    = " delete from subscribers where id = ?";
-
-  $stmt   = $conn->prepare($sql);
-
-  $stmt->bind_param('s', $id);
-
-  $stmt->execute();
-
-  header("Location: records.php");
+    
+    $dbh->query('DELETE FROM subscribers WHERE id=:id');
+    $dbh->bindvalue(':id',$id, PDO::PARAM_INT);
+    
+    $run_query = $dbh->execute();
+    
+    header("Location: http://localhost:9090/mySQL_Trigger_Example/");
 
   exit;
 }
