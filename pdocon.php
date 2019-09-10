@@ -8,7 +8,7 @@ class Pdocon{
         private $host       = "localhost";
         private $user       = "root";
         private $pass       = "";
-        private $dbnm       = "Inventory_Application";
+        private $dbnm       = "Trigger_test";
    
 
     //Handle our connection

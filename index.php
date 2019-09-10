@@ -1,5 +1,11 @@
 <?php
-    require('dbconn.php');
+    require('pdocon.php');
+
+
+    // Make connection to the database.
+    $dbh = new Pdocon; 
+
+    
     $fname   = '';
     $email   = '';
     $error   = '';
@@ -11,14 +17,16 @@
 
         if(!$fname || !$email){
 
-          $error .= 'All fields are required. <br />';
+          $dbh->errmsg .= 'All fields are required. <br />';
 
         }elseif(!strpos($email, "@" ) || !strpos($email, ".")){
 
-          $error .= 'Email is invalid. <br />';
+          $dbh->errmsg .= 'Email is invalid. <br />';
         }
-        if(!$error){
-          //insert in to database
+        if(!($dbh->errmsg)){
+          
+            //insert in to database
+          $dbh->query("INSERT INTO subscribers(id, fname, email) values(NULL, )")
           $sql    = "insert into subscribers (fname, email) values (?, ?) ";
           $stmt   = $conn->prepare($sql);
           $stmt->bind_param('ss', $fname, $email);
@@ -36,7 +44,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Mysql trigger Example with PHP</title>
+  <title>mySQL Trigger with PHP</title>
   <style>
     .container {
       margin: 0 auto;
@@ -54,8 +62,8 @@
 </head>
 <body>
 <div class="container">
-  <h2>Example: mysql trigger on before insert of record</h2>
-  <h4>Register a Subscriber</h4>
+  <h2>mySQL Trigger Application: Before Insert of Record</h2>
+  <h4>Subscriber Registration</h4>
   <?php if($error) { ?>
     <p class="error"><?php echo $error; ?></p>
   <? } ?>
