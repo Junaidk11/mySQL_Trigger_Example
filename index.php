@@ -17,25 +17,36 @@
 
         if(!$fname || !$email){
 
-          $dbh->errmsg .= 'All fields are required. <br />';
+         
+            $error ='All fields are required. <br />';
 
         }elseif(!strpos($email, "@" ) || !strpos($email, ".")){
 
-          $dbh->errmsg .= 'Email is invalid. <br />';
+          
+            $error = 'Email is invalid. <br />';
         }
-        if(!($dbh->errmsg)){
+        if(!($error)){
           
             //insert in to database
-          $dbh->query("INSERT INTO subscribers(id, fname, email) values(NULL, )")
-          $sql    = "insert into subscribers (fname, email) values (?, ?) ";
-          $stmt   = $conn->prepare($sql);
-          $stmt->bind_param('ss', $fname, $email);
-          if($stmt->execute()){
-            $success = 'Subscriber added successfully.';
-            $fname = '';
-            $email = '';
+          $dbh->query("INSERT INTO subscribers(id, fname, email) values(NULL, :name, :email)");
+          
+            // Usually you would clean & validate the data coming in from the form before binding
+            // But, this example is for implementing Triggers, we can skip the cleaning & validation step. 
+            
+            $dbh->bindvalue(':name',$fname, PDO::PARAM_STR);
+            $dbh->bindvalue(':email', $email, PDO::PARAM_STR);
+        
+            // Run the query to your database
+            $run_query = $dbh->execute();
+            
+            
+          if($run_query){
+              // If Query successful
+                $fname = '';
+                $email = '';
           }else{
-            $error .= 'Error while saving subscriber. Try again. <br />';
+              
+                $error = 'Error while saving subscriber. Try again. <br />';
           }
        }
     }
@@ -62,7 +73,7 @@
 </head>
 <body>
 <div class="container">
-  <h2>mySQL Trigger Application: Before Insert of Record</h2>
+  <h2>mySQL Trigger Application: Before Inserting Record</h2>
   <h4>Subscriber Registration</h4>
   <?php if($error) { ?>
     <p class="error"><?php echo $error; ?></p>
@@ -84,7 +95,9 @@
    </p>
   </form>
   <p>Upon clicking "Submit" button, form data is saved into subscriber table and a trigger 
-     before_subscriber_insert will execute.</p>
+      before_subscriber_insert will execute. <br>
+      
+      The 'before_subscriber_insert trigger will update the 'audit_subscriber' table with time-stamp and the action that was just performed. </p>
 </div>
 </body>
 
