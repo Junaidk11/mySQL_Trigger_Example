@@ -1,2 +1,2 @@
-# mySQL_Trigger
-Implementation and testing of mySQL Triggers.
+# mySQL Triggers
+Implementation and testing of mySQL Trigger.
